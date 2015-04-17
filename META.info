@@ -4,7 +4,7 @@
 	"description" : "A Perl 6 implementation of Perl 6-style string formatting.",
 	"depends" : [ ],
 	"source-url" : "git://github.com/perl6/form.git",
-	"author" : "Matthew Walton"
+	"author" : "Matthew Walton",
 	"provides" : {
         "Form"                   : "lib/Form.pm",
         "Form::TextFormatting"   : "lib/Form/TextFormatting.pm",
@@ -13,5 +13,5 @@
         "Form::Actions"          : "lib/Form/Actions.pm",
         "Form::Types"            : "lib/Form/Types.pm",
         "Form::NumberFormatting" : "lib/Form/NumberFormatting.pm"
-    },
+    }
 }
