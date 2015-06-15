@@ -128,7 +128,7 @@ our sub full-justify(Str $line, Int $width, Str $space = ' ') {
 
 		@spaces.push('');
 
-		return (@words Z @spaces).join;
+		return (@words Z @spaces).flat.join;
 	}
 
 	return $line.substr(0, $width);
