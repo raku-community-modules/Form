@@ -2,9 +2,9 @@
         "perl" : "6.*",
 	"name" : "Form",
 	"version" : "*",
-	"description" : "A Perl 6 implementation of Perl 6-style string formatting.",
+	"description" : "A Raku implementation of Raku-style string formatting.",
 	"depends" : [ ],
-	"source-url" : "git://github.com/perl6/form.git",
+	"source-url" : "git://github.com/raku-community-modules/Form.git",
 	"author" : "Matthew Walton",
 	"provides" : {
         "Form"                   : "lib/Form.pm",
