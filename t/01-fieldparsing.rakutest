@@ -1,5 +1,3 @@
-use v6;
-
 use Test;
 
 plan 22;
@@ -31,4 +29,4 @@ given Form::Grammar {
     ok(.parse('{>>>.<<}'), 'Simple number line field parses');
 }
 
-# vim: ft=perl6 sw=4 ts=4 noexpandtab
+# vim: expandtab shiftwidth=4

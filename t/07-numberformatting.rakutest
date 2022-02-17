@@ -1,5 +1,3 @@
-use v6;
-
 use Test;
 use Form::NumberFormatting;
 
@@ -12,5 +10,5 @@ ok(@parts[1] == 14, "Fractional number part correct");
 ok(@parts[0] == -3, "Whole number part correct (negative)");
 ok(@parts[1] == 14, "Fractional number part correct (negative)");
 
-# vim: ft=perl6 sw=4 ts=4 noexpandtab
+# vim: expandtab shiftwidth=4
 

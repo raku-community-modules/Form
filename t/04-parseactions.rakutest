@@ -1,5 +1,3 @@
-#
-use v6;
 use Test;
 
 plan 38;
@@ -81,4 +79,4 @@ ok($v-results.ast[0].block == Bool::False, "Verbatim field object is not a block
 	ok($field.fracs-width == 4, "Numeric field fracs-width is correct");
 }
 
-# vim: ft=perl6 sw=4 ts=4 noexpandtab
+# vim: expandtab shiftwidth=4

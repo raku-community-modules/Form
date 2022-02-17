@@ -1,5 +1,2 @@
-lib/Test.pm
-*.pir
-*.swp
-Makefile
-
+.precomp/
+/Form-*

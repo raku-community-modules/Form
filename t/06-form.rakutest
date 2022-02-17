@@ -1,5 +1,3 @@
-use v6;
-
 use Test;
 use Form;
 
@@ -82,4 +80,4 @@ is(
 	"Array of strings and array of numbers"
 );
 
-# vim: ft=perl6 sw=4 ts=4 noexpandtab
+# vim: expandtab shiftwidth=4
