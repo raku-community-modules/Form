@@ -1,0 +1,76 @@
+use Test;
+use Form;
+
+plan 7;
+
+my $id     = 'INV-001';
+my $date   = '2026-04-29';
+my $client = 'Acme Corp';
+
+my @desc      = ('Website redesign', 'Hosting setup');
+my @hours     = (10, 2);
+my @rates     = (150, 100);
+my @subtotals = (1500, 200);
+my @labels    = ('Subtotal', 'Tax (8%)', 'Total');
+my @totals    = (1700, 136, 1836);
+
+my @hours-f     = @hours.map(    { sprintf '%6.1f',  $_ });
+my @rates-f     = @rates.map(    { sprintf '%8.2f',  $_ });
+my @subtotals-f = @subtotals.map({ sprintf '%10.2f', $_ });
+my @totals-f    = @totals.map(   { sprintf '%10.2f', $_ });
+
+my $item-fmt  = '{[[[[[[[[[[[[[[[[[[[[[[[[[[[[} {' ~ ']' x 4  ~ '} {' ~ ']' x 6  ~ '} {' ~ ']' x 8  ~ '}';
+my $total-fmt = '{' ~ ']' x 44 ~ '} {' ~ ']' x 8 ~ '}';
+
+ok form('Invoice: {<<<<<}',    $id)     eq "Invoice: INV-001\n",    'invoice id';
+ok form('Date:    {<<<<<<<<}', $date)   eq "Date:    2026-04-29\n", 'date';
+ok form('Client:  {<<<<<<<}',  $client) eq "Client:  Acme Corp\n",  'client';
+
+is form(
+    $item-fmt,
+    $@desc, $@hours-f, $@rates-f, $@subtotals-f
+),
+"Website redesign                 10.0   150.00    1500.00\n" ~
+"Hosting setup                     2.0   100.00     200.00\n",
+'item rows with block description field and array data';
+
+is form(
+    $total-fmt,
+    $@labels, $@totals-f
+),
+"                                      Subtotal    1700.00\n" ~
+"                                      Tax (8%)     136.00\n" ~
+"                                         Total    1836.00\n",
+'totals with array data';
+
+is form(
+    $item-fmt,
+    'Project setup and configuration',
+    sprintf('%6.1f', 8), sprintf('%8.2f', 125), sprintf('%10.2f', 1000)
+),
+"Project setup and                 8.0   125.00    1000.00\n" ~
+"configuration                                            \n",
+'block field wraps long description onto second line';
+
+is form(
+    'Invoice: {<<<<<}',    $id,
+    'Date:    {<<<<<<<<}', $date,
+    'Client:  {<<<<<<<}',  $client,
+    '-' x 57,
+    $item-fmt,             $@desc, $@hours-f, $@rates-f, $@subtotals-f,
+    '-' x 57,
+    $total-fmt,            $@labels, $@totals-f,
+), q:to/INVOICE/, 'full invoice';
+Invoice: INV-001
+Date:    2026-04-29
+Client:  Acme Corp
+---------------------------------------------------------
+Website redesign                 10.0   150.00    1500.00
+Hosting setup                     2.0   100.00     200.00
+---------------------------------------------------------
+                                      Subtotal    1700.00
+                                      Tax (8%)     136.00
+                                         Total    1836.00
+INVOICE
+
+# vim: expandtab shiftwidth=4

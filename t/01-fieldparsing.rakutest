@@ -1,6 +1,6 @@
 use Test;
 
-plan 22;
+plan 30;
 
 use Form::Grammar;
 
@@ -27,6 +27,14 @@ given Form::Grammar {
     ok(.parse('{""""""""""}'), "Verbatim block field");
     ok(.parse('{]]].[[}'), 'Simple number block field parses');
     ok(.parse('{>>>.<<}'), 'Simple number line field parses');
+    ok(.parse('{]]],[[}'),          'Comma decimal block field parses');
+    ok(.parse('{>>>,<<}'),          'Comma decimal line field parses');
+    ok(.parse('{],]]],]]].[}'),     'Brittanic thousands block field parses');
+    ok(.parse('{].]]].]]],[}'),     'Continental thousands block field parses');
+    ok(.parse('{]],]],]]].[[}'),    'Subcontinental thousands block field parses');
+    ok(.parse('{] ]]] ]]]:[}'),     'Hyperspatial (space) thousands block field parses');
+    ok(.parse('{]]]],]]]].[}'),     'Asiatic (groups of 4) block field parses');
+    ok(.parse(Q<{]']]]']]],[}>),    'Tyrolean (apostrophe) thousands block field parses');
 }
 
 # vim: expandtab shiftwidth=4

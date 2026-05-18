@@ -1,6 +1,6 @@
 use Test;
 
-plan 38;
+plan 49;
 
 use Form::Grammar;
 use Form::Actions;
@@ -77,6 +77,29 @@ ok($v-results.ast[0].block == Bool::False, "Verbatim field object is not a block
 	ok($field.block == Bool::False, "Numeric field object is not a block");
 	ok($field.ints-width == 4, "Numeric field int-width is correct");
 	ok($field.fracs-width == 4, "Numeric field fracs-width is correct");
+	ok($field.decimal-marker eq '.', "Numeric field dot decimal marker correct");
+}
+
+{
+	my $source = '{]]],[[}';
+	my $r = Form::Grammar.parse($source, :actions($actions));
+	ok($r, "Numeric block field with comma decimal parses");
+	my $field = $r.ast[0];
+	ok($field ~~ Form::Field::Numeric, "Comma decimal field is Numeric");
+	ok($field.decimal-marker eq ',', "Comma decimal marker stored correctly");
+	ok($field.ints-width == 4, "Comma decimal ints-width correct");
+	ok($field.fracs-width == 3, "Comma decimal fracs-width correct");
+}
+
+{
+    my $source = '{],]]],]]].[}';
+    my $r = Form::Grammar.parse($source, :actions($actions));
+    ok($r, "Brittanic thousands block field parses with actions");
+    my $field = $r.ast[0];
+    ok($field ~~ Form::Field::Numeric,  "Brittanic field is Numeric");
+    ok($field.thousands-sep eq ',',     "Brittanic thousands-sep is comma");
+    ok($field.group-sizes ~~ [3,3,1],   "Brittanic group-sizes are [3,3,1]");
+    ok($field.ints-width  == 10,        "Brittanic ints-width is 10");
 }
 
 # vim: expandtab shiftwidth=4

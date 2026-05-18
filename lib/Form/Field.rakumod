@@ -77,13 +77,27 @@ our class Form::Field::Text is Form::Field::Field {
 our class Form::Field::Numeric is Form::Field::Field {
     has Int $.ints-width;
     has Int $.fracs-width;
+    has Str $.decimal-marker = '.';
+    has Str $.thousands-sep  = '';
+    has $.group-sizes        = [];
 
-    multi method format(Real $data)
-    {
+    multi method format(Real $data) {
         my ($ints, $fractions) = Form::NumberFormatting::obtain-number-parts(+$data);
-        $ints = Form::TextFormatting::right-justify(~$ints, $.ints-width);
-        $fractions = Form::TextFormatting::left-justify(~$fractions, $.fracs-width);
-        [ $ints ~ '.' ~ $fractions ]
+        my $ints-str = do if $.thousands-sep {
+            my $sign = +$ints < 0 ?? '-' !! '';
+            $sign ~ Form::NumberFormatting::format-with-thousands(~$ints.abs, $.thousands-sep, $.group-sizes)
+        } else {
+            ~$ints
+        };
+        return [ '#' x $.ints-width ~ $.decimal-marker ~ '#' x $.fracs-width ] if $ints-str.chars > $.ints-width;
+        my $int-fmt  = Form::TextFormatting::right-justify($ints-str, $.ints-width);
+        my $frac-fmt = Form::TextFormatting::left-justify(~$fractions, $.fracs-width);
+        [ $int-fmt ~ $.decimal-marker ~ $frac-fmt ]
+    }
+
+    multi method format(Any $data where { !($_ ~~ Positional) }) {
+        my $n = try Form::NumberFormatting::parse-number(~$data, $.decimal-marker);
+        $n.defined ?? self.format($n) !! ['?' x $.ints-width ~ $.decimal-marker ~ '?' x $.fracs-width]
     }
 }
 

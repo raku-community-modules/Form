@@ -1,6 +1,13 @@
 use Form::Field;
 use Form::Types;
 
+sub thou-info(Str $int-part, Str $bracket) {
+    my $sep = $int-part.comb.first({ $_ ne $bracket });
+    return ('', []) unless $sep.defined;
+    my $groups = [$int-part.split($sep).map(*.chars).reverse];
+    ($sep, $groups)
+}
+
 class Form::Actions {
 
     method centred_field($/) {
@@ -88,20 +95,28 @@ class Form::Actions {
     }
 
     method numeric_block_field($/) {
+        my ($thou-sep, $groups) = thou-info(~$<int-part>, ']');
         make Form::Field::Numeric.new(
-        	:block(Bool::True),
-        	:width((~$/).chars + 2),
-        	:ints-width((~$/[0]).chars + 1),
-        	:fracs-width((~$/[1]).chars + 1)
+            :block(Bool::True),
+            :width((~$/).chars + 2),
+            :ints-width($<int-part>.chars + 1),
+            :fracs-width($<frac-part>.chars + 1),
+            :decimal-marker(~$<decimal>),
+            :thousands-sep($thou-sep),
+            :group-sizes($groups)
         );
     }
 
     method numeric_line_field($/) {
+        my ($thou-sep, $groups) = thou-info(~$<int-part>, '>');
         make Form::Field::Numeric.new(
-        	:block(Bool::False),
-        	:width((~$/).chars + 2),
-        	:ints-width((~$/[0]).chars + 1),
-        	:fracs-width((~$/[1]).chars + 1)
+            :block(Bool::False),
+            :width((~$/).chars + 2),
+            :ints-width($<int-part>.chars + 1),
+            :fracs-width($<frac-part>.chars + 1),
+            :decimal-marker(~$<decimal>),
+            :thousands-sep($thou-sep),
+            :group-sizes($groups)
         );
     }
 
