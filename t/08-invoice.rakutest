@@ -14,10 +14,11 @@ my @subtotals = (1500, 200);
 my @labels    = ('Subtotal', 'Tax (8%)', 'Total');
 my @totals    = (1700, 136, 1836);
 
-my @hours-f     = @hours.map(    { sprintf '%6.1f',  $_ });
-my @rates-f     = @rates.map(    { sprintf '%8.2f',  $_ });
-my @subtotals-f = @subtotals.map({ sprintf '%10.2f', $_ });
-my @totals-f    = @totals.map(   { sprintf '%10.2f', $_ });
+#iamerejh - these sprintfs have to go
+my @hoursf     = @hours.map(    { sprintf '%6.1f',  $_ });
+my @ratesf     = @rates.map(    { sprintf '%8.2f',  $_ });
+my @subtotalsf = @subtotals.map({ sprintf '%10.2f', $_ });
+my @totalsf    = @totals.map(   { sprintf '%10.2f', $_ });
 
 my $item-fmt  = '{[[[[[[[[[[[[[[[[[[[[[[[[[[[[} {' ~ ']' x 4  ~ '} {' ~ ']' x 6  ~ '} {' ~ ']' x 8  ~ '}';
 my $total-fmt = '{' ~ ']' x 44 ~ '} {' ~ ']' x 8 ~ '}';
@@ -26,18 +27,16 @@ ok form('Invoice: {<<<<<}',    $id)     eq "Invoice: INV-001\n",    'invoice id'
 ok form('Date:    {<<<<<<<<}', $date)   eq "Date:    2026-04-29\n", 'date';
 ok form('Client:  {<<<<<<<}',  $client) eq "Client:  Acme Corp\n",  'client';
 
-is form(
-    $item-fmt,
-    $@desc, $@hours-f, $@rates-f, $@subtotals-f
-),
+is ([~] (@desc Z @hoursf Z @ratesf Z @subtotalsf).map(-> ($d, $h, $r, $s) {
+    form($item-fmt, $d, $h, $r, $s)
+})),
 "Website redesign                 10.0   150.00    1500.00\n" ~
 "Hosting setup                     2.0   100.00     200.00\n",
 'item rows with block description field and array data';
 
-is form(
-    $total-fmt,
-    $@labels, $@totals-f
-),
+is ([~] (@labels Z @totalsf).map(-> ($l, $t) {
+    form($total-fmt, $l, $t)
+})),
 "                                      Subtotal    1700.00\n" ~
 "                                      Tax (8%)     136.00\n" ~
 "                                         Total    1836.00\n",
@@ -52,15 +51,16 @@ is form(
 "configuration                                            \n",
 'block field wraps long description onto second line';
 
+my $items  = [~] (@desc Z @hoursf Z @ratesf Z @subtotalsf).map(-> ($d, $h, $r, $s) { form($item-fmt, $d, $h, $r, $s) });
+my $totals = [~] (@labels Z @totalsf).map(-> ($l, $t) { form($total-fmt, $l, $t) });
+
 is form(
     'Invoice: {<<<<<}',    $id,
     'Date:    {<<<<<<<<}', $date,
     'Client:  {<<<<<<<}',  $client,
     '-' x 57,
-    $item-fmt,             $@desc, $@hours-f, $@rates-f, $@subtotals-f,
-    '-' x 57,
-    $total-fmt,            $@labels, $@totals-f,
-), q:to/INVOICE/, 'full invoice';
+) ~ $items ~ form('-' x 57) ~ $totals,
+q:to/INVOICE/, 'full invoice';
 Invoice: INV-001
 Date:    2026-04-29
 Client:  Acme Corp
