@@ -19,6 +19,8 @@ An implementation of Perl's Form module, as described by Exegesis 7 and Damian C
 
 This is a WORK IN PROGRESS and most likely doesn't work at any given time.
 
+Full documentation: [docs/Form.md](docs/Form.md)
+
 NUMERIC FIELDS
 ==============
 
