@@ -292,10 +292,10 @@ FIELD REFERENCE TABLE
     left/bottomed         {_<<<<<<<}        {_[[[[[[[}
     right/bottomed        {_>>>>>>>}        {_]]]]]]]}`
 
-AUTHOR
-======
+AUTHORS
+=======
 
-Matthew Walton
+Matthew Walton, Stephen Roe
 
 Source: [https://github.com/raku-community-modules/Form](https://github.com/raku-community-modules/Form)
 
@@ -304,7 +304,7 @@ COPYRIGHT AND LICENSE
 
 Copyright 2009 - 2012 Matthew Walton
 
-Copyright 2013 - 2022 Raku Community
+Copyright 2013 - 2026 Raku Community
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 

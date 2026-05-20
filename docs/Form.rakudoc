@@ -333,9 +333,9 @@ one line per call.
     left/bottomed         {_<<<<<<<}        {_[[[[[[[}
     right/bottomed        {_>>>>>>>}        {_]]]]]]]}`
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Matthew Walton
+Matthew Walton, Stephen Roe
 
 Source: L<https://github.com/raku-community-modules/Form>
 
@@ -343,7 +343,7 @@ Source: L<https://github.com/raku-community-modules/Form>
 
 Copyright 2009 - 2012 Matthew Walton
 
-Copyright 2013 - 2022 Raku Community
+Copyright 2013 - 2026 Raku Community
 
 This library is free software; you can redistribute it and/or modify it under
 the Artistic License 2.0.
