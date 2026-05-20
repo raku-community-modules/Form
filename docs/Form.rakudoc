@@ -155,15 +155,15 @@ The integer part is right-justified; the fractional part is left-justified and
 zero-padded to the declared number of decimal places.
 
 =begin code
-{>>>.<<}     line field  — 3 integer columns, dot, 2 fractional columns
-{]]].[{}     block field
+{>>>.<}     line field  — 3 integer columns, dot, 2 fractional columns
+{]]].[}     block field - same
 =end code
 
 =head3 Field width and decimal places
 
 The opening C<{> contributes B<one> position to the integer width, and the closing
 C<}> contributes B<one> position to the fractional width. This makes the minimum
-fractional width 1 (one decimal place), because even with zero C<[> or C<< < >>
+fractional width 1 (one decimal place) C<0.0>, because even with zero C<[> or C<< < >>
 characters the C<}> still provides one column:
 
 =begin code

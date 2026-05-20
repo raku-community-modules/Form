@@ -137,12 +137,12 @@ Numeric Fields
 
 A numeric field aligns a decimal number around a fixed-position decimal marker. The integer part is right-justified; the fractional part is left-justified and zero-padded to the declared number of decimal places.
 
-    {>>>.<<}     line field  — 3 integer columns, dot, 2 fractional columns
-    {]]].[{}     block field
+    {>>>.<}     line field  — 3 integer columns, dot, 2 fractional columns
+    {]]].[}     block field - same
 
 ### Field width and decimal places
 
-The opening `{` contributes **one** position to the integer width, and the closing `}` contributes **one** position to the fractional width. This makes the minimum fractional width 1 (one decimal place), because even with zero `[` or `< ` characters the `}` still provides one column:
+The opening `{` contributes **one** position to the integer width, and the closing `}` contributes **one** position to the fractional width. This makes the minimum fractional width 1 (one decimal place) `0.0`, because even with zero `[` or `< ` characters the `}` still provides one column:
 
     {]].}      1 decimal place   ( 0 × [ + } )
     {]].[}     2 decimal places  ( 1 × [ + } )
