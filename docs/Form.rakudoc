@@ -163,16 +163,18 @@ zero-padded to the declared number of decimal places.
 
 The opening C<{> contributes B<one> position to the integer width, and the closing
 C<}> contributes B<one> position to the fractional width. This makes the minimum
-fractional width 1 (one decimal place) C<0.0>, because even with zero C<[> or C<< < >>
-characters the C<}> still provides one column:
+fractional width 1 (one decimal place) i.e. <0.0>, because the C<}> still provides
+one column:
 
 =begin code
-{]].}      1 decimal place   ( 0 × [ + } )
-{]].[}     2 decimal places  ( 1 × [ + } )
-{]].[[}    3 decimal places  ( 2 × [ + } )
+{]].}      1 decimal place   ( 0 × [ + } - 00.0   )
+{]].[}     2 decimal places  ( 1 × [ + } - 00.00  )
+{]].[[}    3 decimal places  ( 2 × [ + } - 00.000 )
 =end code
 
-A bare trailing decimal such as C<0.> is not possible by design.
+A bare trailing decimal such as C<0.> is not possible by design. This permits the butting
+of neighboring numeric columns with 1 (or even 0) space as the gap, i.e. C<{].} {].}> for
+C<0.1 0.2>.
 
 =head3 Rounding and zero-padding
 
