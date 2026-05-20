@@ -103,15 +103,23 @@ grammar Form::Grammar {
     }
 
     regex numeric_block_field {
-        $<int-part>=( ']'+ [ <-[\[\]<>+]> ']'+ ]* )
-        $<decimal>=(<-[\[\]<>+]>)
+        $<pre-sign>=('-'?)
+        $<open-paren>=('('?)
+        $<int-part>=( ']'+ [ <-[\[\]<>+()-]> ']'+ ]* )
+        $<decimal>=(<-[\[\]<>+()-]>)
         $<frac-part>=('['*)
+        $<post-sign>=('-'?)
+        $<close-paren>=(')'?)
     }
 
     regex numeric_line_field {
-        $<int-part>=( '>'+ [ <-[\[\]<>+]> '>'+ ]* )
-        $<decimal>=(<-[\[\]<>+]>)
+        $<pre-sign>=('-'?)
+        $<open-paren>=('('?)
+        $<int-part>=( '>'+ [ <-[\[\]<>+()-]> '>'+ ]* )
+        $<decimal>=(<-[\[\]<>+()-]>)
         $<frac-part>=('<'*)
+        $<post-sign>=('-'?)
+        $<close-paren>=(')'?)
     }
 
     regex verbatim_line_field {

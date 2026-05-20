@@ -211,6 +211,30 @@ Negative numbers work naturally; the minus sign occupies one integer column:
 say form '{]]].[}', -3.14;    #   -3.14
 ```
 
+### Sign-reserved fields
+
+By default the minus sign shifts the digits right, so positive and negative numbers do not align column-for-column. **Sign-reserved** fields allocate a fixed column for the sign so the digits stay aligned regardless of sign:
+
+    {-]].[}      leading sign  — one sign column before the integer part
+    {]].[-}      trailing sign — one sign column after the fractional part
+    {(]].[)}     paren sign    — opening paren before, closing paren after
+
+```raku
+say form '{-]].[}',   3.14;    #    3.14   (space in sign column)
+say form '{-]].[}',  -3.14;    # -  3.14   (minus in sign column)
+say form '{]].[-}',   3.14;    #   3.14    (trailing space)
+say form '{]].[-}',  -3.14;    #   3.14-   (trailing minus)
+say form '{(]].[)}',  3.14;    #    3.14   (spaces around)
+say form '{(]].[)}', -3.14;    # (  3.14)  (parens around)
+```
+
+The sign column is included in the total field width. On overflow the sign column is preserved and the numeric columns fill with `#`:
+
+```raku
+say form '{-]].[}',  9999.9;    #  ###.##
+say form '{-]].[}', -9999.9;    # -###.##
+```
+
 Vertical Alignment
 ------------------
 
@@ -286,6 +310,10 @@ FIELD REFERENCE TABLE
     eurocomma (Continen.) {>.>>>.>>>,<<}    {].]]].]]],[{}
     Swiss Army apostrophe {>'>>>'>>.<<}     {]']]]']]].[{}
     Asiatic               {>>,>>>>>.<<}     {]],]]]]].[{}
+
+    signed leading        {->>.<<}          {-]].[}
+    signed trailing       {>>.<-}           {]].[- }
+    signed paren          {(>>.<)}          {(]].[)}
 
     left/middled          {=<<<<<<<}        {=[[[[[[[}
     right/middled         {=>>>>>>>}        {=]]]]]]]}`

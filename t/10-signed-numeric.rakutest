@@ -1,0 +1,32 @@
+use Test;
+use Form;
+
+plan 14;
+
+# Leading sign {-]].[}  (1 sign col + ints-width=3 + dec + fracs-width=2 = 7 total)
+is form('{-]].[}',  3.14),   "   3.14\n",  'leading sign — positive';
+is form('{-]].[}', -3.14),   "-  3.14\n",  'leading sign — negative';
+is form('{-]].[}',  0),      "   0.00\n",  'leading sign — zero';
+is form('{-]].[}',  99.99),  "  99.99\n",  'leading sign — positive 2-digit int';
+is form('{-]].[}', -99.99),  "- 99.99\n",  'leading sign — negative 2-digit int';
+
+# Overflow: abs(int) > ints-width fills with #; sign col preserved
+is form('{-]].[}',  9999.9), " ###.##\n",  'leading sign — positive overflow';
+is form('{-]].[}', -9999.9), "-###.##\n",  'leading sign — negative overflow';
+
+# Trailing sign {]].[-}  (ints-width=3 + dec + fracs-width=2 + 1 sign col = 7 total)
+is form('{]].[-}',  3.14),   "  3.14 \n",  'trailing sign — positive';
+is form('{]].[-}', -3.14),   "  3.14-\n",  'trailing sign — negative';
+
+# Overflow: trailing sign field
+is form('{]].[-}', -9999.9), "###.##-\n",  'trailing sign — negative overflow';
+
+# Paren sign {(]].[)}  (1 open + ints-width=3 + dec + fracs-width=2 + 1 close = 8 total)
+is form('{(]].[)}',  3.14),  "   3.14 \n", 'paren sign — positive';
+is form('{(]].[)}', -3.14),  "(  3.14)\n", 'paren sign — negative';
+is form('{(]].[)}',  0),     "   0.00 \n", 'paren sign — zero';
+
+# Overflow: paren sign field
+is form('{(]].[)}', -9999.9), "(###.##)\n", 'paren sign — negative overflow';
+
+# vim: expandtab shiftwidth=4

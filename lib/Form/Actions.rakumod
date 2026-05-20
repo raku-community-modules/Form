@@ -96,6 +96,12 @@ class Form::Actions {
 
     method numeric_block_field($/) {
         my ($thou-sep, $groups) = thou-info(~$<int-part>, ']');
+        my $sign-style = do {
+            if    ~$<pre-sign>   { SignStyle::leading  }
+            elsif ~$<post-sign>  { SignStyle::trailing }
+            elsif ~$<open-paren> { SignStyle::paren    }
+            else                  { SignStyle::unsigned }
+        };
         make Form::Field::Numeric.new(
             :block(Bool::True),
             :width((~$/).chars + 2),
@@ -103,12 +109,19 @@ class Form::Actions {
             :fracs-width($<frac-part>.chars + 1),
             :decimal-marker(~$<decimal>),
             :thousands-sep($thou-sep),
-            :group-sizes($groups)
+            :group-sizes($groups),
+            :sign-style($sign-style)
         );
     }
 
     method numeric_line_field($/) {
         my ($thou-sep, $groups) = thou-info(~$<int-part>, '>');
+        my $sign-style = do {
+            if    ~$<pre-sign>   { SignStyle::leading  }
+            elsif ~$<post-sign>  { SignStyle::trailing }
+            elsif ~$<open-paren> { SignStyle::paren    }
+            else                  { SignStyle::unsigned }
+        };
         make Form::Field::Numeric.new(
             :block(Bool::False),
             :width((~$/).chars + 2),
@@ -116,7 +129,8 @@ class Form::Actions {
             :fracs-width($<frac-part>.chars + 1),
             :decimal-marker(~$<decimal>),
             :thousands-sep($thou-sep),
-            :group-sizes($groups)
+            :group-sizes($groups),
+            :sign-style($sign-style)
         );
     }
 
