@@ -142,11 +142,11 @@ A numeric field aligns a decimal number around a fixed-position decimal marker. 
 
 ### Field width and decimal places
 
-The opening `{` contributes **one** position to the integer width, and the closing `}` contributes **one** position to the fractional width. This makes the minimum fractional width 1 (one decimal place) i.e. <0.0>, because even with zero `[` or `< ` characters the `}` still provides one column:
+The opening `{` contributes **one** position to the integer width, and the closing `}` contributes **one** position to the fractional width. This makes the minimum fractional width 1 (one decimal place) i.e. <0.0>, because the `}` still provides one column:
 
-    {]].}      1 decimal place   ( 0 × [ + } )
-    {]].[}     2 decimal places  ( 1 × [ + } )
-    {]].[[}    3 decimal places  ( 2 × [ + } )
+    {]].}      1 decimal place   ( 0 × [ + } - 00.0   )
+    {]].[}     2 decimal places  ( 1 × [ + } - 00.00  )
+    {]].[[}    3 decimal places  ( 2 × [ + } - 00.000 )
 
 A bare trailing decimal such as `0.` is not possible by design. This permits the butting of neighboring numeric columns with 1 (or even 0) space as the gap, i.e. `{].} {].}` for `0.1 0.2`.
 
