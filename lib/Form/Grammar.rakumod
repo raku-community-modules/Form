@@ -105,13 +105,13 @@ grammar Form::Grammar {
     regex numeric_block_field {
         $<int-part>=( ']'+ [ <-[\[\]<>+]> ']'+ ]* )
         $<decimal>=(<-[\[\]<>+]>)
-        $<frac-part>=('['+)
+        $<frac-part>=('['*)
     }
 
     regex numeric_line_field {
         $<int-part>=( '>'+ [ <-[\[\]<>+]> '>'+ ]* )
         $<decimal>=(<-[\[\]<>+]>)
-        $<frac-part>=('<'+)
+        $<frac-part>=('<'*)
     }
 
     regex verbatim_line_field {

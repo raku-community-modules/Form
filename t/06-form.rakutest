@@ -34,16 +34,16 @@ dies-ok({form('{<<<<}')}, 'Too few arguments');
 # time for some numbers
 
 ok(form('{>>.<}', 456.78) eq "456.78\n", "Simple numeric field");
-ok(form('{>>.<}', 56.7) eq " 56.7 \n", "Non-full simple numeric field");
+ok(form('{>>.<}', 56.7) eq " 56.70\n", "Non-full simple numeric field");
 ok(form('{>>.<}', 4567.89) eq "###.##\n", "Left-side overflow numeric field fills with #");
-ok(form('{>>.<}', 56.789) eq " 56.78\n", "Right-side overflow numeric field");
-ok(form('{>>.<}', "42.5") eq " 42.5 \n", "Numeric string coerces to number");
+ok(form('{>>.<}', 56.789) eq " 56.79\n", "Right-side overflow numeric field");
+ok(form('{>>.<}', "42.5") eq " 42.50\n", "Numeric string coerces to number");
 ok(form('{>>.<}', "three") eq "???.??\n", "Non-numeric string fills with ?");
 
 # Custom decimal marker
 ok(form('{>>,<}', 1.23)   eq "  1,23\n",  "Comma decimal marker output");
 ok(form('{>>,<}', "1,23") eq "  1,23\n",  "Comma decimal in string input");
-ok(form('{>>:<}', 7.5)    eq "  7:5 \n",  "Colon decimal marker output");
+ok(form('{>>:<}', 7.5)    eq "  7:50\n",  "Colon decimal marker output");
 
 # Mixed numbers and text
 ok(form(
@@ -51,7 +51,7 @@ ok(form(
 		"Six short people went down to the sea", 6.78
 	)
 	eq
-	"Six       6.78  \nshort           \npeople          \nwent            \ndown to         \nthe sea         \n",
+	"Six       6.7800\nshort           \npeople          \nwent            \ndown to         \nthe sea         \n",
 	"Block field with number field next to it"
 );
 
@@ -61,7 +61,7 @@ is(
 	form(
 		'{>>.<<}', $@nums
 	),
-	"  4.5  \n  5.6  \n  6.78 \n  9.101\n",
+	"  4.500\n  5.600\n  6.780\n  9.101\n",
 	"Array of numbers"
 ); 
 
@@ -83,7 +83,7 @@ is(
 		'{>>>>>>}|{>.<<}',
 		$@strings, $@nums
 	),
-	"     one| 4.5  \n     two| 5.6  \n   three| 6.78 \n    four| 9.101\n",
+	"     one| 4.500\n     two| 5.600\n   three| 6.780\n    four| 9.101\n",
 	"Array of strings and array of numbers"
 );
 
@@ -93,8 +93,8 @@ ok(form('{],]]],]]].[}',     4567.89) eq "     4,567.89\n",  "Brittanic: 4567.89
 ok(form('{],]]],]]].[}',      567.89) eq "       567.89\n",  "Brittanic: 567.89 no separator");
 ok(form('{],]]],]]].[}',   99999999)  eq "##########.##\n",  "Brittanic: overflow fills with #");
 ok(form('{].]]].]]],[}',  1234567.89) eq " 1.234.567,89\n",  "Continental: 1234567.89");
-ok(form('{]],]],]]].[[}', 1234567.89) eq " 12,34,567.89 \n", "Subcontinental: 1234567.89");
-ok(form('{]],]],]]].[[}',  234567.89) eq "  2,34,567.89 \n", "Subcontinental: 234567.89");
+ok(form('{]],]],]]].[[}', 1234567.89) eq " 12,34,567.890\n", "Subcontinental: 1234567.89");
+ok(form('{]],]],]]].[[}',  234567.89) eq "  2,34,567.890\n", "Subcontinental: 234567.89");
 ok(form('{] ]]] ]]]:[}',  1234567.89) eq " 1 234 567:89\n",  "Hyperspatial: 1234567.89");
 ok(form('{]]]],]]]].[}',  1234567.89) eq "  123,4567.89\n",  "Asiatic: 1234567.89");
 

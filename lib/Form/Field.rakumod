@@ -9,8 +9,6 @@ our class Form::Field::Field {
     has Int $.width is rw;
     has $.alignment is rw;
     has $.data is rw;
-    
-#    multi method format(Str $data) { ... }
 
     multi method format(@data) {
         my @output;
@@ -51,6 +49,10 @@ our class Form::Field::Field {
 our class Form::Field::Text is Form::Field::Field {
     has $.justify is rw;
 
+    multi method format(Any $data where { !($_ ~~ Positional) }) {
+        self.format(~$data)
+    }
+
     multi method format(Str $data) {
         my @lines = Form::TextFormatting::unjustified-wrap(~$data, $.width);
 
@@ -82,7 +84,7 @@ our class Form::Field::Numeric is Form::Field::Field {
     has $.group-sizes        = [];
 
     multi method format(Real $data) {
-        my ($ints, $fractions) = Form::NumberFormatting::obtain-number-parts(+$data);
+        my ($ints, $frac-str) = Form::NumberFormatting::obtain-number-parts(+$data, $.fracs-width);
         my $ints-str = do if $.thousands-sep {
             my $sign = +$ints < 0 ?? '-' !! '';
             $sign ~ Form::NumberFormatting::format-with-thousands(~$ints.abs, $.thousands-sep, $.group-sizes)
@@ -91,7 +93,7 @@ our class Form::Field::Numeric is Form::Field::Field {
         };
         return [ '#' x $.ints-width ~ $.decimal-marker ~ '#' x $.fracs-width ] if $ints-str.chars > $.ints-width;
         my $int-fmt  = Form::TextFormatting::right-justify($ints-str, $.ints-width);
-        my $frac-fmt = Form::TextFormatting::left-justify(~$fractions, $.fracs-width);
+        my $frac-fmt = Form::TextFormatting::left-justify($frac-str, $.fracs-width);
         [ $int-fmt ~ $.decimal-marker ~ $frac-fmt ]
     }
 

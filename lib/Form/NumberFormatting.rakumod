@@ -20,15 +20,13 @@ our sub parse-number(Str $s, Str $decimal-marker = '.') {
     $normalised ~~ /^ \s* <[+\-]>? \d+ ['.' \d+]? \s* $/ ?? $normalised.Real !! Nil
 }
 
-our sub obtain-number-parts(Real $number) {
-    my $ints = $number.Int;
-    my $fractions = $number - $ints;
-
-    # it's much easier if we have this as an integer as it's rendered separately to the ints
-    $fractions.=abs;
-    $fractions *= 10 while $fractions.Int != $fractions;
-
-    ($ints, $fractions);
+our sub obtain-number-parts(Real $number, Int $decimals) {
+    my $factor   = 10 ** $decimals;
+    my $rounded  = ($number * $factor).round / $factor;
+    my $ints     = $rounded.Int;
+    my $frac     = (($rounded.abs - $ints.abs) * $factor).round.Int;
+    my $frac-str = sprintf('%0' ~ $decimals ~ 'd', $frac);
+    ($ints, $frac-str);
 }
 
 # vim: expandtab shiftwidth=4

@@ -1,76 +1,34 @@
 use Test;
 use Form;
 
-plan 7;
+plan 1;
 
 my $id     = 'INV-001';
 my $date   = '2026-04-29';
 my $client = 'Acme Corp';
 
-my @desc      = ('Website redesign', 'Hosting setup');
-my @hours     = (10, 2);
-my @rates     = (150, 100);
-my @subtotals = (1500, 200);
-my @labels    = ('Subtotal', 'Tax (8%)', 'Total');
-my @totals    = (1700, 136, 1836);
-
-#iamerejh - these sprintfs have to go
-my @hoursf     = @hours.map(    { sprintf '%6.1f',  $_ });
-my @ratesf     = @rates.map(    { sprintf '%8.2f',  $_ });
-my @subtotalsf = @subtotals.map({ sprintf '%10.2f', $_ });
-my @totalsf    = @totals.map(   { sprintf '%10.2f', $_ });
-
-my $item-fmt  = '{[[[[[[[[[[[[[[[[[[[[[[[[[[[[} {' ~ ']' x 4  ~ '} {' ~ ']' x 6  ~ '} {' ~ ']' x 8  ~ '}';
-my $total-fmt = '{' ~ ']' x 44 ~ '} {' ~ ']' x 8 ~ '}';
-
-ok form('Invoice: {<<<<<}',    $id)     eq "Invoice: INV-001\n",    'invoice id';
-ok form('Date:    {<<<<<<<<}', $date)   eq "Date:    2026-04-29\n", 'date';
-ok form('Client:  {<<<<<<<}',  $client) eq "Client:  Acme Corp\n",  'client';
-
-is ([~] (@desc Z @hoursf Z @ratesf Z @subtotalsf).map(-> ($d, $h, $r, $s) {
-    form($item-fmt, $d, $h, $r, $s)
-})),
-"Website redesign                 10.0   150.00    1500.00\n" ~
-"Hosting setup                     2.0   100.00     200.00\n",
-'item rows with block description field and array data';
-
-is ([~] (@labels Z @totalsf).map(-> ($l, $t) {
-    form($total-fmt, $l, $t)
-})),
-"                                      Subtotal    1700.00\n" ~
-"                                      Tax (8%)     136.00\n" ~
-"                                         Total    1836.00\n",
-'totals with array data';
-
-is form(
-    $item-fmt,
-    'Project setup and configuration',
-    sprintf('%6.1f', 8), sprintf('%8.2f', 125), sprintf('%10.2f', 1000)
-),
-"Project setup and                 8.0   125.00    1000.00\n" ~
-"configuration                                            \n",
-'block field wraps long description onto second line';
-
-my $items  = [~] (@desc Z @hoursf Z @ratesf Z @subtotalsf).map(-> ($d, $h, $r, $s) { form($item-fmt, $d, $h, $r, $s) });
-my $totals = [~] (@labels Z @totalsf).map(-> ($l, $t) { form($total-fmt, $l, $t) });
+my @description = ('Website redesign', 'Hosting setup');
+my @hours       = (10, 2);
+my @rates       = (150, 100);
+my @subtotals   = (1500, 200);
+my @labels      = ('Subtotal', 'Tax (8%)', 'Total');
+my @totals      = (1700, 136, 1836);
 
 is form(
     'Invoice: {<<<<<}',    $id,
     'Date:    {<<<<<<<<}', $date,
-    'Client:  {<<<<<<<}',  $client,
-    '-' x 57,
-) ~ $items ~ form('-' x 57) ~ $totals,
-q:to/INVOICE/, 'full invoice';
-Invoice: INV-001
-Date:    2026-04-29
-Client:  Acme Corp
----------------------------------------------------------
-Website redesign                 10.0   150.00    1500.00
-Hosting setup                     2.0   100.00     200.00
----------------------------------------------------------
-                                      Subtotal    1700.00
-                                      Tax (8%)     136.00
-                                         Total    1836.00
-INVOICE
+    'Client:  {<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<}',  $client,
+    ' ',
+    'Description                      Hours     Rate   Subtotal',
+    '----------------------------------------------------------',
+    '{[[[[[[[[[[[[[[[[[[[[[[[[[[[[}  {]]].}  {]]].[}   {]]]].[}',
+    @description,                    @hours, @rates,  @subtotals,
+    '----------------------------------------------------------',
+    '                                      {]]]]]]]}   {]]]].[}',
+                                            @labels,    @totals,
+),
+
+"Invoice: INV-001\nDate:    2026-04-29\nClient:  Acme Corp                            \n \nDescription                      Hours     Rate   Subtotal\n----------------------------------------------------------\nWebsite redesign                  10.0   150.00    1500.00\nHosting setup                      2.0   100.00     200.00\n----------------------------------------------------------\n                                       Subtotal    1700.00\n                                       Tax (8%)     136.00\n                                          Total    1836.00\n",
+'full invoice';
 
 # vim: expandtab shiftwidth=4
