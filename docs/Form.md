@@ -290,6 +290,26 @@ print form
 
 Literal strings (format strings with no fields) contribute their text directly, one line per call.
 
+INTERLEAVE
+==========
+
+The `:interleave` adverb lets you write the entire template as a single multi-line string and supply all data arguments after it, rather than alternating format / data pairs:
+
+```raku
+print form :interleave,
+    q:to/END/,
+Invoice: {<<<<<}
+Date:    {<<<<<<<<}
+--------------------
+{[[[[[[[[[[[[[[[[[} {]]]].[}
+--------------------
+END
+    $id, $date,
+    @descriptions, @amounts;
+```
+
+`form` splits the template on newlines and processes each line in order, consuming data arguments left-to-right across all rows. Lines with no fields are output as literals.
+
 FIELD REFERENCE TABLE
 =====================
 

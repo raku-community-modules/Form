@@ -54,7 +54,7 @@ TODO
 ====
 
   - Currencies
-  - Rendering of Complex numbers (currently restricted to Real)
+  - Complex numbers
   - Everything else
 
 AUTHORS
