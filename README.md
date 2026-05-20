@@ -53,19 +53,9 @@ Numbers are rounded to the specified number of decimal places and zero-padded (e
 TODO
 ====
 
-  * DOCUMENTATION
-
-  * Data specified as lists
-
-  * Numeric fields with decimal separator and justification
-
-  * Numeric fields with thousands separators and justification
-
-  * Currencies
-
-  * Rendering of Complex numbers (currently restricted to Real)
-
-  * Everything else
+  - Currencies
+  - Rendering of Complex numbers (currently restricted to Real)
+  - Everything else
 
 AUTHORS
 =======
