@@ -312,7 +312,7 @@ FIELD REFERENCE TABLE
     Asiatic               {>>,>>>>>.<<}     {]],]]]]].[{}
 
     signed leading        {->>.<<}          {-]].[}
-    signed trailing       {>>.<-}           {]].[- }
+    signed trailing       {>>.<-}           {]].[-}
     signed paren          {(>>.<)}          {(]].[)}
 
     left/middled          {=<<<<<<<}        {=[[[[[[[}
