@@ -3,7 +3,7 @@ use Form::Grammar;
 use Form::Actions;
 use Form::Field;
 
-sub form(:$interleave = False, **@args --> Str) is export {
+sub form(:$interleave = False, **@args --> Str:D) is export {
 	my $result = '';
 
 	my @work;
