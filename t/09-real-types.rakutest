@@ -1,0 +1,35 @@
+use Test;
+use Form;
+
+plan 21;
+
+# 1-decimal place: {]].} — closing brace alone provides fracs-width=1
+is form('{]].}', 5),      "  5.0\n",  'Int    1dp — zero-pads frac';
+is form('{]].}', 42),     " 42.0\n",  'Int    1dp — multi-digit int';
+is form('{]].}', 1.5),    "  1.5\n",  'Rat    1dp — exact';
+is form('{]].}', 3.14),   "  3.1\n",  'Rat    1dp — rounds';
+is form('{]].}', 5e0),    "  5.0\n",  'Num    1dp — zero-pads frac';
+is form('{]].}', 1.5e0),  "  1.5\n",  'Num    1dp — exact';
+
+# 2-decimal places: {]].[}
+is form('{]].[}', 5),     "  5.00\n", 'Int    2dp — zero-pads frac';
+is form('{]].[}', 1.5),   "  1.50\n", 'Rat    2dp — zero-pads frac';
+is form('{]].[}', 3.14),  "  3.14\n", 'Rat    2dp — exact';
+is form('{]].[}', 3.145), "  3.15\n", 'Rat    2dp — rounds up';
+is form('{]].[}', 3.144), "  3.14\n", 'Rat    2dp — rounds down';
+is form('{]].[}', 5e0),   "  5.00\n", 'Num    2dp — zero-pads frac';
+is form('{]].[}', 1.5e0), "  1.50\n", 'Num    2dp — zero-pads frac';
+
+# 3-decimal places: {]].[[}
+is form('{]].[[}', 5),     "  5.000\n", 'Int    3dp — zero-pads frac';
+is form('{]].[[}', 1.5),   "  1.500\n", 'Rat    3dp — zero-pads frac';
+is form('{]].[[}', 3.14),  "  3.140\n", 'Rat    3dp — zero-pads frac';
+is form('{]].[[}', 3.141), "  3.141\n", 'Rat    3dp — exact';
+is form('{]].[[}', 5e0),   "  5.000\n", 'Num    3dp — zero-pads frac';
+is form('{]].[[}', 1.5e0), "  1.500\n", 'Num    3dp — zero-pads frac';
+
+# negative values
+is form('{]].[}',  -3.14), " -3.14\n",  'Rat    2dp — negative';
+is form('{]].[[}', -1.5),  " -1.500\n", 'Rat    3dp — negative, zero-pads';
+
+# vim: expandtab shiftwidth=4

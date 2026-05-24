@@ -1,0 +1,52 @@
+use Test;
+use Form;
+
+plan 1;
+
+my $id     = 'INV-001';
+my $date   = '2026-04-29';
+my $client = 'Acme Corp';
+
+my @description = ('Website redesign', 'Hosting setup');
+my @hours       = (10, 2);
+my @rates       = (150, 100);
+my @subtotals   = (1500, 200);
+my @labels      = ('Subtotal', 'Tax (8%)', 'Total');
+my @totals      = (1700, 136, 1836);
+
+# field {<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<} is 37 cols wide
+my $client-padded = $client ~ ' ' x (37 - $client.chars);
+my $sp = ' ';
+
+my $expected = qq:to/END/;
+Invoice: INV-001
+Date:    2026-04-29
+Client:  $client-padded
+$sp
+Description                      Hours     Rate   Subtotal
+----------------------------------------------------------
+Website redesign                  10.0   150.00    1500.00
+Hosting setup                      2.0   100.00     200.00
+----------------------------------------------------------
+                                       Subtotal    1700.00
+                                       Tax (8%)     136.00
+                                          Total    1836.00
+END
+
+is form(
+    'Invoice: {<<<<<}',    $id,
+    'Date:    {<<<<<<<<}', $date,
+    'Client:  {<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<}',  $client,
+    ' ',
+    'Description                      Hours     Rate   Subtotal',
+    '----------------------------------------------------------',
+    '{[[[[[[[[[[[[[[[[[[[[[[[[[[[[}  {]]].}  {]]].[}   {]]]].[}',
+    @description,                    @hours, @rates,  @subtotals,
+    '----------------------------------------------------------',
+    '                                      {]]]]]]]}   {]]]].[}',
+                                            @labels,    @totals,
+),
+$expected,
+'full invoice';
+
+# vim: expandtab shiftwidth=4

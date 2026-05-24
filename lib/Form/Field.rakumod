@@ -9,8 +9,6 @@ our class Form::Field::Field {
     has Int $.width is rw;
     has $.alignment is rw;
     has $.data is rw;
-    
-#    multi method format(Str $data) { ... }
 
     multi method format(@data) {
         my @output;
@@ -51,6 +49,10 @@ our class Form::Field::Field {
 our class Form::Field::Text is Form::Field::Field {
     has $.justify is rw;
 
+    multi method format(Any $data where { !($_ ~~ Positional) }) {
+        self.format(~$data)
+    }
+
     multi method format(Str $data) {
         my @lines = Form::TextFormatting::unjustified-wrap(~$data, $.width);
 
@@ -77,13 +79,63 @@ our class Form::Field::Text is Form::Field::Field {
 our class Form::Field::Numeric is Form::Field::Field {
     has Int $.ints-width;
     has Int $.fracs-width;
+    has Str $.decimal-marker = '.';
+    has Str $.thousands-sep  = '';
+    has $.group-sizes        = [];
+    has $.sign-style         = SignStyle::unsigned;
 
-    multi method format(Real $data)
-    {
-        my ($ints, $fractions) = Form::NumberFormatting::obtain-number-parts(+$data);
-        $ints = Form::TextFormatting::right-justify(~$ints, $.ints-width);
-        $fractions = Form::TextFormatting::left-justify(~$fractions, $.fracs-width);
-        [ $ints ~ '.' ~ $fractions ]
+    multi method format(Real $data) {
+        if $.sign-style == SignStyle::unsigned {
+            my ($ints, $frac-str) = Form::NumberFormatting::obtain-number-parts(+$data, $.fracs-width);
+            my $ints-str = do if $.thousands-sep {
+                my $sign = $ints < 0 ?? '-' !! '';
+                $sign ~ Form::NumberFormatting::format-with-thousands(~$ints.abs, $.thousands-sep, $.group-sizes)
+            } else {
+                ~$ints
+            };
+            return [ '#' x $.ints-width ~ $.decimal-marker ~ '#' x $.fracs-width ] if $ints-str.chars > $.ints-width;
+            return [ Form::TextFormatting::right-justify($ints-str, $.ints-width)
+                   ~ $.decimal-marker
+                   ~ Form::TextFormatting::left-justify($frac-str, $.fracs-width) ]
+        }
+
+        my $negative = $data < 0;
+        my ($ints, $frac-str) = Form::NumberFormatting::obtain-number-parts($data.abs, $.fracs-width);
+        my $ints-str = do if $.thousands-sep {
+            Form::NumberFormatting::format-with-thousands(~$ints, $.thousands-sep, $.group-sizes)
+        } else {
+            ~$ints
+        };
+
+        my ($sign-pre, $sign-suf) = do given $.sign-style {
+            when SignStyle::leading  { ($negative ?? '-' !! ' ', '')  }
+            when SignStyle::trailing { ('', $negative ?? '-' !! ' ')  }
+            when SignStyle::paren    { ($negative ?? '(' !! ' ', $negative ?? ')' !! ' ') }
+        };
+
+        if $ints-str.chars > $.ints-width {
+            return [ $sign-pre ~ '#' x $.ints-width ~ $.decimal-marker ~ '#' x $.fracs-width ~ $sign-suf ]
+        }
+
+        my $body = Form::TextFormatting::right-justify($ints-str, $.ints-width)
+                 ~ $.decimal-marker
+                 ~ Form::TextFormatting::left-justify($frac-str, $.fracs-width);
+        [ $sign-pre ~ $body ~ $sign-suf ]
+    }
+
+    multi method format(Any $data where { !($_ ~~ Positional) }) {
+        my $n = try Form::NumberFormatting::parse-number(~$data, $.decimal-marker);
+        if $n.defined {
+            self.format($n)
+        } else {
+            my ($pre, $suf) = do given $.sign-style {
+                when SignStyle::leading  { (' ', '')  }
+                when SignStyle::trailing { ('', ' ')  }
+                when SignStyle::paren    { (' ', ' ') }
+                default                  { ('', '')   }
+            };
+            [$pre ~ '?' x $.ints-width ~ $.decimal-marker ~ '?' x $.fracs-width ~ $suf]
+        }
     }
 }
 

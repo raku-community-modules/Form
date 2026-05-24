@@ -3,12 +3,12 @@ use Form::NumberFormatting;
 
 plan 4;
 
-my @parts = Form::NumberFormatting::obtain-number-parts(3.14);
+my @parts = Form::NumberFormatting::obtain-number-parts(3.14, 2);
 ok(@parts[0] == 3, "Whole number part correct");
-ok(@parts[1] == 14, "Fractional number part correct");
-@parts = Form::NumberFormatting::obtain-number-parts(-3.14);
+ok(@parts[1] eq "14", "Fractional number part correct");
+@parts = Form::NumberFormatting::obtain-number-parts(-3.14, 2);
 ok(@parts[0] == -3, "Whole number part correct (negative)");
-ok(@parts[1] == 14, "Fractional number part correct (negative)");
+ok(@parts[1] eq "14", "Fractional number part correct (negative)");
 
 # vim: expandtab shiftwidth=4
 

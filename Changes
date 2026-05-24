@@ -2,5 +2,11 @@ Revision history for Form
 
 {{$NEXT}}
 
+    - Add :interleave adverb: pass multi-line template then all data at the end
+    - Add signed numeric fields: leading {-]].[}, trailing {]].[-}, paren {(]].[)}
+    - Add numeric fields: custom decimal marker, thousands separators (6 conventions)
+    - Add numeric overflow (#) and invalid-data (?) indicators
+    - Add AUTHORS: Stephen Roe
+
 1.0  2022-02-17T19:56:51+01:00
     - First version in the zef ecosystem

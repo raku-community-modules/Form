@@ -3,24 +3,39 @@ use Form::Grammar;
 use Form::Actions;
 use Form::Field;
 
-sub form(*@args --> Str) is export {
-	my @lines;
+sub form(:$interleave = False, **@args --> Str:D) is export {
 	my $result = '';
+
+	my @work;
+	if $interleave {
+		my $template = @args.shift;
+		my @data     = @args;
+		my $a        = Form::Actions.new;
+		for $template.lines -> $line {
+			my $f     = Form::Grammar.parse($line, :actions($a));
+			$f or die "form: error: format line '$line' is not valid";
+			my $count = $f.ast.grep({ $_ ~~ Form::Field::Field }).elems;
+			@work.push($line);
+			@work.push(@data.shift) for ^$count;
+		}
+	} else {
+		@work = @args;
+	}
 
 	my $actions = Form::Actions.new;
 
-	while @args.elems {
-		my $format = @args.shift;
+	while @work.elems {
+		my $format = @work.shift;
 		my $f = Form::Grammar.parse($format, :actions($actions));
 		$f or die "form: error: argument '$format' is not a valid format string";
 		my $nonliteral-field-count = $f.ast.grep( { $_ ~~ Form::Field::Field } ).elems;
-		if @args.elems < $nonliteral-field-count {
-			die "Insufficient number of data arguments ({@args.elems}) provided for format template '$format' which requires $nonliteral-field-count";
+		if @work.elems < $nonliteral-field-count {
+			die "Insufficient number of data arguments ({@work.elems}) provided for format template '$format' which requires $nonliteral-field-count";
 		}
 
 		my @data;
 		for ^$nonliteral-field-count {
-			@data.push(@args.shift);
+			@data.push(@work.shift);
 		}
 
 		my @formatted;
