@@ -20,7 +20,7 @@
   },
   "resources": [
   ],
-  "source-url": "git://github.com/raku-community-modules/Form.git",
+  "source-url": "https://github.com/raku-community-modules/Form.git",
   "tags": [
     "FORM",
     "FORMATTING",
@@ -28,5 +28,5 @@
   ],
   "test-depends": [
   ],
-  "version": "1.0"
+  "version": "1.1"
 }

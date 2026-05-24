@@ -2,6 +2,7 @@ Revision history for Form
 
 {{$NEXT}}
 
+1.1  2026-05-24T18:07:18+01:00
     - Add :interleave adverb: pass multi-line template then all data at the end
     - Add signed numeric fields: leading {-]].[}, trailing {]].[-}, paren {(]].[)}
     - Add numeric fields: custom decimal marker, thousands separators (6 conventions)
